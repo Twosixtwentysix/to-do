@@ -1,18 +1,9 @@
-const but1 = document.getElementById('but1');
+
         const input = document.getElementById('input');
         const hiddenItem = document.getElementById('hiddenitem');
         const ul = document.getElementById('ul');
         const text = document.getElementById('text');
 
-        input.addEventListener('blur', function() {
-            but1.style.display = 'block';
-            hiddenItem.style.display ='none';
-        });
-
-        but1.addEventListener('click', function() {
-            hiddenItem.style.display = 'block';
-            but1.style.display = 'none';
-        });
 
         function addcontent() {
             const todo = input.value;
@@ -22,22 +13,54 @@ const but1 = document.getElementById('but1');
 
             const todovalue = document.createElement('li');
             todovalue.textContent = todo;
+
+            // Add event listener for deletion
+            todovalue.addEventListener('click', function() {
+                ul.removeChild(todovalue); // Remove from UI
+
+                // Remove from local storage
+                const index = todolist.indexOf(todo);
+                if (index !== -1) {
+                    todolist.splice(index, 1);
+                    localStorage.setItem('todos', JSON.stringify(todolist));
+                }
+
+                // Show text if no to-dos left
+                if (ul.children.length === 0) {
+                    text.style.display = 'block';
+                }
+            });
+
             ul.appendChild(todovalue);
 
-            if (ul.children.length > 0) {
-                text.style.display = 'none';
-                input.value = '';
-            } else {
-                text.style.display = 'block';
-            }
+            // Hide text if to-dos exist
+            text.style.display = 'none';
+            input.value = '';
         }
 
         // Display existing to-dos on page load
-        window.onload = function() {
+        window.onload = function() {    
             const todolist = JSON.parse(localStorage.getItem('todos')) || [];
             todolist.forEach(function(todo) {
                 const todovalue = document.createElement('li');
                 todovalue.textContent = todo;
+
+               
+                todovalue.addEventListener('click', function() {
+                    ul.removeChild(todovalue); // Remove from UI
+
+                    const index = todolist.indexOf(todo);
+                    if (index !== -1) {
+                        todolist.splice(index, 1);
+                        localStorage.setItem('todos', JSON.stringify(todolist));
+                    }
+
+                   
+                    if (ul.children.length === 0) {
+                        text.style.display = 'block';
+                    }
+                });
+
                 ul.appendChild(todovalue);
             });
 
@@ -46,8 +69,4 @@ const but1 = document.getElementById('but1');
             } else {
                 text.style.display = 'block';
             }
-        };
-
-
-
-
+        };      
